@@ -1,7 +1,7 @@
 ﻿namespace Application
 {
     // Results pattern
-    public class Result(string ErrorMsg)
+    public class Result(string? ErrorMsg = null)
     {
         public bool IsError => string.IsNullOrEmpty(ErrorMsg);
     }

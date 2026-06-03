@@ -3,13 +3,13 @@ using Domain.Entities;
 
 namespace Application.Repositories
 {
-    internal interface ITaskListRepository
+    public interface ITaskListRepository
     {
-        Task<Result<TaskList>> GetAsync(string taskId);
+        Task<Result<TaskListResponseDto>> GetAsync(TaskListRequestDto taskListRequestDto);
 
-        Task<Result> CreateAsync(CreateTaskListDto taskList);
+        Task<Result> CreateAsync(TaskListRequestDto taskListRequestDto);
 
-        Task<Result> UpdateAsync(UpdateTaskListDto taskList);
+        Task<Result> UpdateAsync(UpdateTaskListDto taskListDto);
 
         Task<Result> DeleteAsync(string taskId);
 

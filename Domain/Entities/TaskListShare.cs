@@ -1,23 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities
 {
     public class TaskListShare
     {
-        [Key]
-        public Guid Id { get; set; }
+        [BsonId]
+        public ObjectId Id { get; set; }
+        [BsonElement("taskListId")]
+        public ObjectId TaskListId { get; set; }
+        [BsonElement("userId")]
+        public string UserId { get; set; }
 
-        [ForeignKey("TaskListId")]
-        public TaskList TaskList { get; set; }
-        public int TaskListId { get; set; }
-        
-        [ForeignKey("UserId")]
-        public User User { get; set; }
-        public int UserId { get; set; }
-
+        [BsonElement("status")]
         public TaskListShareStatus Status { get; set; }
+        [BsonElement("createdUtc")]
         public DateTime CreatedUtc { get; set; }
+        [BsonElement("lastUpdatedUtc")]
         public DateTime LastUpdatedUtc { get; set; }
     }
 }

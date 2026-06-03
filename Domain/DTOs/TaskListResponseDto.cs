@@ -1,7 +1,7 @@
 ﻿namespace Application.DTOs;
 
-public class CreateTaskListDto
+public class TaskListResponseDto
 {
     public string Name { get; set; }
-    public string OwnerId { get; set; }
+    public string Tasks { get; set; }
 }

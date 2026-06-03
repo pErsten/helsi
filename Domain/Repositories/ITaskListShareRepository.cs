@@ -2,7 +2,7 @@
 
 namespace Application.Repositories
 {
-    internal interface ITaskListShareRepository
+    public interface ITaskListShareRepository
     {
         Task<Result> CreateAsync(string userId, string taskId);
         Task<Result> DeleteAsync(string userId, string taskId);
