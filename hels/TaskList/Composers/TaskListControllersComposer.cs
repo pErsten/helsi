@@ -12,7 +12,7 @@ namespace Api.TaskList.Composers
         {
             var group = builder.MapGroup("TaskList");
 
-            group.MapPut("/get", TaskListGetController.Handle);
+            group.MapGet("/get", TaskListGetController.Handle);
             group.MapPut("/create", TaskListCreateController.Handle);
             group.MapPatch("/update", TaskListUpdateController.Handle);
             group.MapDelete("/delete", TaskListDeleteController.Handle);

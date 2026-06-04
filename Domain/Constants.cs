@@ -9,5 +9,6 @@
         public const string TaskListAlreadyExists = "TaskList already exists";
         public const string TaskListForbiddenAccessOrNotFound = "TaskList or not found or user has no access to it";
         public const string TaskListNotFound = "TaskList not found";
+        public const string TaskListSharesNotFound = "TaskList shares not found";
     }
 }

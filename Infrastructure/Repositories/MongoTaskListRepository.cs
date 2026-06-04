@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
                 return new Result<TaskListResponseDto>(Constants.TaskListForbiddenAccessOrNotFound);
 
             var taskList = await taskLists
-                .Find(x => x.Id == taskListSharedId)
+                .Find(x => x.Id == taskListSharedId && x.Status == TaskListStatus.Active)
                 .Project(x => new TaskListResponseDto
                 {
                     Name = x.Name,
@@ -47,9 +47,9 @@ namespace Infrastructure.Repositories
             clientSessionHandle.StartTransaction();
             try
             {
-                var taskListId = taskLists
-                    .Find(x => x.Name == taskListDto.Name && x.OwnerId == taskListDto.UserId)
-                    .Project(x => x.Id)
+                var taskListId = await taskLists
+                    .Find(x => x.Name == taskListDto.Name && x.OwnerId == taskListDto.UserId && x.Status == TaskListStatus.Active)
+                    .Project(x => (ObjectId?)x.Id)
                     .FirstOrDefaultAsync();
                 if (taskListId is not null)
                 {
@@ -61,6 +61,7 @@ namespace Infrastructure.Repositories
                 {
                     Name = taskListDto.Name,
                     OwnerId = taskListDto.UserId,
+                    Tasks = taskListDto.Tasks,
                     CreatedUtc = DateTime.UtcNow,
                     LastUpdatedUtc = DateTime.UtcNow,
                     Status = TaskListStatus.Active
@@ -102,7 +103,7 @@ namespace Infrastructure.Repositories
 
                 var taskListId = taskLists
                     .FindOneAndUpdateAsync(
-                        x => x.Id == taskListSharedId,
+                        x => x.Id == taskListSharedId && x.Status == TaskListStatus.Active,
                         Builders<TaskList>.Update
                             .Set(x => x.Name, taskListDto.NewName)
                             .Set(x => x.Tasks, taskListDto.NewTasks)
@@ -139,12 +140,24 @@ namespace Infrastructure.Repositories
                     return new Result(Constants.TaskListForbiddenAccessOrNotFound);
                 }
 
-                var taskListId = taskLists
-                    .FindOneAndDeleteAsync(x => x.Id == taskListSharedId);
-                if (taskListId is null)
+                var taskList = await taskLists
+                    .FindOneAndUpdateAsync(
+                        x => x.Id == taskListSharedId && x.Status == TaskListStatus.Active,
+                        Builders<TaskList>.Update.Set(x => x.Status, TaskListStatus.Deleted));
+                if (taskList is null)
                 {
                     await clientSessionHandle.AbortTransactionAsync();
                     return new Result(Constants.TaskListNotFound);
+                }
+
+                var taskListShared = await taskListShares
+                    .UpdateManyAsync(
+                        x => x.TaskListId == taskList.Id && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared),
+                        Builders<TaskListShare>.Update.Set(x => x.Status, TaskListShareStatus.Deleted));
+                if (taskListShared.ModifiedCount <= 0)
+                {
+                    await clientSessionHandle.AbortTransactionAsync();
+                    return new Result(Constants.TaskListSharesNotFound);
                 }
 
                 await clientSessionHandle.CommitTransactionAsync();

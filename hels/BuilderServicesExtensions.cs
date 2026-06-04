@@ -5,8 +5,6 @@ using Api.TaskList.Update;
 using Application.Repositories;
 using FluentValidation;
 using Infrastructure.Repositories;
-using Infrastructure.TaskList;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
 namespace Api

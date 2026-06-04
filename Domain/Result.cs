@@ -9,7 +9,7 @@
         }
 
         public string? ErrorMsg { get; set; }
-        public bool IsError => string.IsNullOrEmpty(ErrorMsg);
+        public bool IsError => !string.IsNullOrEmpty(ErrorMsg);
     }
 
     public class Result<T>
@@ -26,12 +26,12 @@
 
         public string? ErrorMsg { get; set; }
         private T? Data { get; set; }
-        public bool IsError => string.IsNullOrEmpty(ErrorMsg);
+        public bool IsError => !string.IsNullOrEmpty(ErrorMsg);
 
         public bool TryGetData(out T? data)
         {
             data = IsError ? default : Data;
-            return IsError;
+            return !IsError;
         }
     }
 }
