@@ -3,6 +3,6 @@
     public class TaskListGetRequestDto
     {
         public string TaskListId { get; set; }
-        public string OwnerId { get; set; }
+        public string UserId { get; set; }
     }
 }

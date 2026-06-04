@@ -11,7 +11,7 @@ namespace Api.TaskList.Update
             var dto = new TaskListUpdateRequestDto
             {
                 TaskListId = taskListId,
-                OwnerId = httpContext.GetUser(),
+                UserId = httpContext.GetUser(),
                 NewName = newTaskListName,
                 NewTasks = newTasks
             };

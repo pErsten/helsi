@@ -2,10 +2,11 @@
 using Application.DTOs;
 using Application.Repositories;
 using Domain;
-using Domain.Entities;
-using MongoDB.Driver;
-using MongoDB.Bson;
+using Domain.DTOs;
 using Domain.DTOs.TaskList;
+using Domain.Entities;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Infrastructure.Repositories
 {
@@ -25,7 +26,7 @@ namespace Infrastructure.Repositories
         {
             var taskListIdDto = new ObjectId(taskListDto.TaskListId);
             var taskListSharedId = await taskListShares
-                .Find(x => x.UserId == taskListDto.OwnerId && x.TaskListId == taskListIdDto && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared))
+                .Find(x => x.UserId == taskListDto.UserId && x.TaskListId == taskListIdDto && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared))
                 .Project(x => (ObjectId?)x.TaskListId)
                 .FirstOrDefaultAsync();
             if (taskListSharedId is null)
@@ -92,7 +93,7 @@ namespace Infrastructure.Repositories
             {
                 var taskListIdDto = new ObjectId(taskListDto.TaskListId);
                 var taskListSharedId = await taskListShares
-                    .Find(x => x.UserId == taskListDto.OwnerId && x.TaskListId == taskListIdDto && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared))
+                    .Find(x => x.UserId == taskListDto.UserId && x.TaskListId == taskListIdDto && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared))
                     .Project(x => (ObjectId?)x.TaskListId)
                     .FirstOrDefaultAsync();
                 if (taskListSharedId is null)
@@ -131,7 +132,7 @@ namespace Infrastructure.Repositories
             {
                 var taskListIdDto = new ObjectId(taskListDto.TaskListId);
                 var taskListSharedId = await taskListShares
-                    .Find(x => x.UserId == taskListDto.OwnerId && x.TaskListId == taskListIdDto && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared))
+                    .Find(x => x.UserId == taskListDto.UserId && x.TaskListId == taskListIdDto && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared))
                     .Project(x => (ObjectId?)x.TaskListId)
                     .FirstOrDefaultAsync();
                 if (taskListSharedId is null)
@@ -170,14 +171,24 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public Task<Result<IEnumerable<TaskList>>> GetByUserAsync(string userId, int page, int pageSize)
+        public async Task<Result<IEnumerable<TaskListByUserDto>>> GetByUserAsync(TaskListGetAllByUserRequestDto dto)
         {
-            throw new NotImplementedException();
-        }
+            var taskListSharedIds = await taskListShares
+                .Find(x => x.UserId == dto.UserId && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared))
+                .Project(x => x.TaskListId)
+                .ToListAsync();
+            if (taskListSharedIds.Count == 0)
+                return new Result<IEnumerable<TaskListByUserDto>>(Enumerable.Empty<TaskListByUserDto>());
 
-        public Task<Result<IEnumerable<TaskList>>> GetAllAsync(int page, int pageSize)
-        {
-            throw new NotImplementedException();
+            var taskList = await taskLists
+                .Find(x => taskListSharedIds.Contains(x.Id) && x.Status == TaskListStatus.Active)
+                .Project(x => new TaskListByUserDto
+                {
+                    Name = x.Name,
+                    TaskListId = x.Id.ToString()
+                })
+                .ToListAsync();
+            return new Result<IEnumerable<TaskListByUserDto>>(taskList);
         }
     }
 }

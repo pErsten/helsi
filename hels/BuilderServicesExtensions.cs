@@ -1,6 +1,7 @@
 ﻿using Api.TaskList.Create;
 using Api.TaskList.Delete;
 using Api.TaskList.Get;
+using Api.TaskList.GetAllByUser;
 using Api.TaskList.Update;
 using Application.Repositories;
 using FluentValidation;
@@ -24,6 +25,7 @@ namespace Api
             services.AddValidatorsFromAssemblyContaining<TaskListGetValidator>();
             services.AddValidatorsFromAssemblyContaining<TaskListUpdateValidator>();
             services.AddValidatorsFromAssemblyContaining<TaskListDeleteValidator>();
+            services.AddValidatorsFromAssemblyContaining<TaskListGetAllByUserValidator>();
 
             // DB configuration
             var mongoDbConnectionString = configuration.GetValue<string>("MongoDBConnectionString")!;

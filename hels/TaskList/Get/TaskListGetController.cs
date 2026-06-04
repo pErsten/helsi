@@ -10,7 +10,7 @@ namespace Api.TaskList.Get
             var dto = new TaskListGetRequestDto
             {
                 TaskListId = taskListId,
-                OwnerId = httpContext.GetUser(),
+                UserId = httpContext.GetUser(),
             };
             var validationResult = await validator.ValidateAsync(dto);
             if (!validationResult.IsValid)

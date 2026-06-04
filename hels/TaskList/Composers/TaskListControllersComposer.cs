@@ -1,6 +1,7 @@
 ﻿using Api.TaskList.Create;
 using Api.TaskList.Delete;
 using Api.TaskList.Get;
+using Api.TaskList.GetAllByUser;
 using Api.TaskList.Update;
 
 namespace Api.TaskList.Composers
@@ -16,7 +17,7 @@ namespace Api.TaskList.Composers
             group.MapPut("/create", TaskListCreateController.Handle);
             group.MapPatch("/update", TaskListUpdateController.Handle);
             group.MapDelete("/delete", TaskListDeleteController.Handle);
-
+            group.MapGet("/getByUser", TaskListGetAllByUserController.Handle);
 
             return builder;
         }

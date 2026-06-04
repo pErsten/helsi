@@ -10,7 +10,7 @@ namespace Api.TaskList.Delete
             var dto = new TaskListDeleteRequestDto
             {
                 TaskListId = taskListId,
-                OwnerId = httpContext.GetUser(),
+                UserId = httpContext.GetUser(),
             };
             var validationResult = await validator.ValidateAsync(dto);
             if (!validationResult.IsValid)
