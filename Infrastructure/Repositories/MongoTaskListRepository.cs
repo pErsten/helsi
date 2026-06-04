@@ -182,6 +182,9 @@ namespace Infrastructure.Repositories
 
             var taskList = await taskLists
                 .Find(x => taskListSharedIds.Contains(x.Id) && x.Status == TaskListStatus.Active)
+                .Skip(dto.Page * dto.PageSize)
+                .Limit(dto.PageSize)
+                .SortByDescending(x => x.CreatedUtc)
                 .Project(x => new TaskListByUserDto
                 {
                     Name = x.Name,
