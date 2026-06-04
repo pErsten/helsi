@@ -2,7 +2,7 @@
 using Domain.DTOs;
 using Domain.DTOs.TaskList;
 
-namespace Application.Repositories
+namespace Domain.Repositories
 {
     public interface ITaskListRepository
     {

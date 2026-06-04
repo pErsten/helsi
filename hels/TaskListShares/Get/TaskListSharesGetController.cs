@@ -1,16 +1,16 @@
-﻿using Domain.DTOs.TaskList;
+﻿using Domain.DTOs.TaskListShares;
 using Domain.Repositories;
 
-namespace Api.TaskList.Get
+namespace Api.TaskListShares.Get
 {
-    public static class TaskListGetController
+    public class TaskListSharesGetController
     {
-        public static async Task<IResult> Handle(string taskListId, TaskListGetValidator validator, HttpContext httpContext, ITaskListRepository contextRepository)
+        public static async Task<IResult> Handle(string taskListId, TaskListSharesGetValidator validator, HttpContext httpContext, ITaskListShareRepository contextRepository)
         {
-            var dto = new TaskListGetRequestDto
+            var dto = new TaskListSharesGetRequestDto
             {
                 TaskListId = taskListId,
-                UserId = httpContext.GetUser(),
+                UserId = httpContext.GetUser()
             };
             var validationResult = await validator.ValidateAsync(dto);
             if (!validationResult.IsValid)
@@ -19,9 +19,9 @@ namespace Api.TaskList.Get
             }
 
             var result = await contextRepository.GetAsync(dto);
-            if (result.TryGetData(out var taskList))
+            if (result.TryGetData(out var taskListShares))
             {
-                return Results.Ok(taskList);
+                return Results.Ok(taskListShares);
             }
             return Results.BadRequest(result.ErrorMsg);
         }

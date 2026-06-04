@@ -1,5 +1,5 @@
-﻿using Application.Repositories;
-using Domain.DTOs.TaskList;
+﻿using Domain.DTOs.TaskList;
+using Domain.Repositories;
 
 namespace Api.TaskList.GetAllByUser
 {

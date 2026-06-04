@@ -1,4 +1,5 @@
 using Api.TaskList.Composers;
+using Api.TaskListShares.Composers;
 
 namespace Api
 {
@@ -21,6 +22,7 @@ namespace Api
             // Controllers
             var route = app.MapGroup("/");
             route.TaskListControllerBuilder();
+            route.TaskListSharesControllerBuilder();
             
             app.Run();
         }

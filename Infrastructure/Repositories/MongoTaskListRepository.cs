@@ -1,10 +1,10 @@
 ﻿using Application;
 using Application.DTOs;
-using Application.Repositories;
 using Domain;
 using Domain.DTOs;
 using Domain.DTOs.TaskList;
 using Domain.Entities;
+using Domain.Repositories;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -22,6 +22,7 @@ namespace Infrastructure.Repositories
             taskLists = dbContext.TaskLists();
             taskListShares = dbContext.TaskListShares();
         }
+
         public async Task<Result<TaskListResponseDto>> GetAsync(TaskListGetRequestDto taskListDto)
         {
             var taskListIdDto = new ObjectId(taskListDto.TaskListId);
@@ -102,14 +103,14 @@ namespace Infrastructure.Repositories
                     return new Result(Constants.TaskListForbiddenAccessOrNotFound);
                 }
 
-                var taskListId = taskLists
+                var updated = taskLists
                     .FindOneAndUpdateAsync(
                         x => x.Id == taskListSharedId && x.Status == TaskListStatus.Active,
                         Builders<TaskList>.Update
                             .Set(x => x.Name, taskListDto.NewName)
                             .Set(x => x.Tasks, taskListDto.NewTasks)
                             .Set(x => x.LastUpdatedUtc, DateTime.UtcNow));
-                if (taskListId is null)
+                if (updated is null)
                 {
                     await clientSessionHandle.AbortTransactionAsync();
                     return new Result(Constants.TaskListNotFound);
@@ -141,11 +142,13 @@ namespace Infrastructure.Repositories
                     return new Result(Constants.TaskListNotFound);
                 }
 
-                var taskListShared = await taskListShares
+                var deleted = await taskListShares
                     .UpdateManyAsync(
                         x => x.TaskListId == taskList.Id && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared),
-                        Builders<TaskListShare>.Update.Set(x => x.Status, TaskListShareStatus.Deleted));
-                if (taskListShared.ModifiedCount <= 0)
+                        Builders<TaskListShare>.Update
+                            .Set(x => x.Status, TaskListShareStatus.Deleted)
+                            .Set(x => x.LastUpdatedUtc, DateTime.UtcNow));
+                if (deleted.ModifiedCount <= 0)
                 {
                     await clientSessionHandle.AbortTransactionAsync();
                     return new Result(Constants.TaskListSharesNotFound);

@@ -1,16 +1,17 @@
-﻿using Domain.DTOs.TaskList;
+﻿using Domain.DTOs.TaskListShares;
 using Domain.Repositories;
 
-namespace Api.TaskList.Delete
+namespace Api.TaskListShares.Delete
 {
-    public class TaskListDeleteController
+    public class TaskListSharesDeleteController
     {
-        public static async Task<IResult> Handle(string taskListId, TaskListDeleteValidator validator, HttpContext httpContext, ITaskListRepository contextRepository)
+        public static async Task<IResult> Handle(string taskListId, string sharedUserId, TaskListSharesDeleteValidator validator, HttpContext httpContext, ITaskListShareRepository contextRepository)
         {
-            var dto = new TaskListDeleteRequestDto
+            var dto = new TaskListSharesDeleteRequestDto
             {
                 TaskListId = taskListId,
-                UserId = httpContext.GetUser(),
+                CallerUserId = httpContext.GetUser(),
+                SharedUserId = sharedUserId
             };
             var validationResult = await validator.ValidateAsync(dto);
             if (!validationResult.IsValid)

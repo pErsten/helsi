@@ -1,4 +1,4 @@
-﻿namespace Application
+﻿namespace Domain
 {
     // Results pattern
     public class Result

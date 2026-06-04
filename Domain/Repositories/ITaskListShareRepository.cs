@@ -1,11 +1,12 @@
-﻿using Domain.Entities;
+﻿using Domain.DTOs;
+using Domain.DTOs.TaskListShares;
 
-namespace Application.Repositories
+namespace Domain.Repositories
 {
     public interface ITaskListShareRepository
     {
-        Task<Result> CreateAsync(string userId, string taskId);
-        Task<Result> DeleteAsync(string userId, string taskId);
-        Task<Result<IEnumerable<TaskListShare>>> GetAsync(string taskId);
+        Task<Result> CreateAsync(TaskListSharesCreateRequestDto dto);
+        Task<Result> DeleteAsync(TaskListSharesDeleteRequestDto dto);
+        Task<Result<IEnumerable<TaskListAllSharesDto>>> GetAsync(TaskListSharesGetRequestDto dto);
     }
 }

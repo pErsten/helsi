@@ -3,7 +3,10 @@ using Api.TaskList.Delete;
 using Api.TaskList.Get;
 using Api.TaskList.GetAllByUser;
 using Api.TaskList.Update;
-using Application.Repositories;
+using Api.TaskListShares.Create;
+using Api.TaskListShares.Delete;
+using Api.TaskListShares.Get;
+using Domain.Repositories;
 using FluentValidation;
 using Infrastructure.Repositories;
 using MongoDB.Driver;
@@ -27,6 +30,10 @@ namespace Api
             services.AddValidatorsFromAssemblyContaining<TaskListDeleteValidator>();
             services.AddValidatorsFromAssemblyContaining<TaskListGetAllByUserValidator>();
 
+            services.AddValidatorsFromAssemblyContaining<TaskListSharesCreateValidator>();
+            services.AddValidatorsFromAssemblyContaining<TaskListSharesDeleteValidator>();
+            services.AddValidatorsFromAssemblyContaining<TaskListSharesGetValidator>();
+
             // DB configuration
             var mongoDbConnectionString = configuration.GetValue<string>("MongoDBConnectionString")!;
             var mongoDbNameString = configuration.GetValue<string>("MongoDBNameString")!;
@@ -36,6 +43,7 @@ namespace Api
             services.AddScoped(x => x.GetService<IMongoClient>().StartSession());
 
             services.AddScoped<ITaskListRepository, MongoTaskListRepository>();
+            services.AddScoped<ITaskListShareRepository, MongoTaskListSharesRepository>();
 
             return builder.Build();
         }
