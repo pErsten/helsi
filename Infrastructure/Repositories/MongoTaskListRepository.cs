@@ -131,19 +131,9 @@ namespace Infrastructure.Repositories
             try
             {
                 var taskListIdDto = new ObjectId(taskListDto.TaskListId);
-                var taskListSharedId = await taskListShares
-                    .Find(x => x.UserId == taskListDto.UserId && x.TaskListId == taskListIdDto && (x.Status == TaskListShareStatus.Owner || x.Status == TaskListShareStatus.Shared))
-                    .Project(x => (ObjectId?)x.TaskListId)
-                    .FirstOrDefaultAsync();
-                if (taskListSharedId is null)
-                {
-                    await clientSessionHandle.AbortTransactionAsync();
-                    return new Result(Constants.TaskListForbiddenAccessOrNotFound);
-                }
-
                 var taskList = await taskLists
                     .FindOneAndUpdateAsync(
-                        x => x.Id == taskListSharedId && x.Status == TaskListStatus.Active,
+                        x => x.Id == taskListIdDto && x.Status == TaskListStatus.Active && x.OwnerId == taskListDto.UserId,
                         Builders<TaskList>.Update.Set(x => x.Status, TaskListStatus.Deleted));
                 if (taskList is null)
                 {
