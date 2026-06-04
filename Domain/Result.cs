@@ -1,8 +1,14 @@
 ﻿namespace Application
 {
     // Results pattern
-    public class Result(string? ErrorMsg = null)
+    public class Result
     {
+        public Result(string? ErrorMsg = null)
+        {
+            this.ErrorMsg = ErrorMsg;
+        }
+
+        public string? ErrorMsg { get; set; }
         public bool IsError => string.IsNullOrEmpty(ErrorMsg);
     }
 
@@ -18,7 +24,7 @@
             ErrorMsg = errorMsg;
         }
 
-        public string ErrorMsg { get; set; }
+        public string? ErrorMsg { get; set; }
         private T? Data { get; set; }
         public bool IsError => string.IsNullOrEmpty(ErrorMsg);
 

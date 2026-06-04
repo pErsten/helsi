@@ -1,6 +1,7 @@
-﻿using Api.TaskList.TaskListCreate;
-using FluentValidation;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Api.TaskList.Create;
+using Api.TaskList.Delete;
+using Api.TaskList.Get;
+using Api.TaskList.Update;
 
 namespace Api.TaskList.Composers
 {
@@ -11,9 +12,10 @@ namespace Api.TaskList.Composers
         {
             var group = builder.MapGroup("TaskList");
 
+            group.MapPut("/get", TaskListGetController.Handle);
             group.MapPut("/create", TaskListCreateController.Handle);
-            //group.MapPatch("/update", Update);
-            //group.MapDelete("/delete", Delete);
+            group.MapPatch("/update", TaskListUpdateController.Handle);
+            group.MapDelete("/delete", TaskListDeleteController.Handle);
 
 
             return builder;

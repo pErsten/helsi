@@ -1,16 +1,16 @@
 ﻿using Application.Repositories;
 using Domain.DTOs.TaskList;
 
-namespace Api.TaskList.Create
+namespace Api.TaskList.Delete
 {
-    public static class TaskListCreateController
+    public class TaskListDeleteController
     {
-        public static async Task<IResult> Handle(string taskListName, TaskListCreateValidator validator, HttpContext httpContext, ITaskListRepository contextRepository)
+        public static async Task<IResult> Handle(string taskListId, TaskListDeleteValidator validator, HttpContext httpContext, ITaskListRepository contextRepository)
         {
-            var dto = new TaskListCreateRequestDto
+            var dto = new TaskListDeleteRequestDto
             {
-                Name = taskListName,
-                UserId = httpContext.GetUser(),
+                TaskListId = taskListId,
+                OwnerId = httpContext.GetUser(),
             };
             var validationResult = await validator.ValidateAsync(dto);
             if (!validationResult.IsValid)
@@ -18,7 +18,7 @@ namespace Api.TaskList.Create
                 return Results.BadRequest(validationResult.Errors.FirstOrDefault()?.ErrorMessage);
             }
 
-            var result = await contextRepository.CreateAsync(dto);
+            var result = await contextRepository.DeleteAsync(dto);
             return result.IsError ? Results.BadRequest(result.ErrorMsg) : Results.Ok();
         }
     }
