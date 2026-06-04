@@ -1,4 +1,5 @@
-﻿using Domain.DTOs.TaskList;
+﻿using Domain;
+using Domain.DTOs.TaskList;
 using FluentValidation;
 using MongoDB.Bson;
 
@@ -11,6 +12,7 @@ namespace Api.TaskList.Update
         private static readonly string TaskListBodyIsRequired = "TaskList body is required";
         private static readonly string TaskListUserIdMustBeSet = "TaskList user id must be set";
         private static readonly string TaskListIdMustBeInCorrectFormat = "TaskList id must be in correct format";
+        private static readonly string TaskListNameLengthOutOfBounds = $"TaskList name must be between {Constants.MinTaskListNameLength} and {Constants.MaxTaskListNameLength} symbols";
         public TaskListUpdateValidator()
         {
             RuleFor(x => x.TaskListId)
@@ -19,7 +21,8 @@ namespace Api.TaskList.Update
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage(TaskListUserIdMustBeSet);
             RuleFor(x => x.NewName)
-                .NotEmpty().WithMessage(TaskListNameIsRequired);
+                .NotEmpty().WithMessage(TaskListNameIsRequired)
+                .Length(Constants.MinTaskListNameLength, Constants.MaxTaskListNameLength).WithMessage(TaskListNameLengthOutOfBounds);
             RuleFor(x => x.NewTasks)
                 .NotEmpty().WithMessage(TaskListBodyIsRequired);
         }
