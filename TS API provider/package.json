@@ -1,0 +1,24 @@
+{
+  "name": "helsi-api-provider",
+  "version": "1.0.0",
+  "description": "TypeScript API provider for the Helsi Task List API",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  },
+  "files": ["dist", "src"],
+  "license": "MIT"
+}
