@@ -19,6 +19,9 @@
   "devDependencies": {
     "typescript": "^5.5.0"
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "license": "MIT"
 }
